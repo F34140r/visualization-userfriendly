@@ -51,6 +51,7 @@ namespace rviz
 
 class FloatProperty;
 class IntProperty;
+class BoolProperty;
 class Property;
 class QuaternionProperty;
 class RosTopicProperty;
@@ -121,6 +122,7 @@ private:
   QuaternionProperty* orientation_property_;
   FloatProperty* alpha_property_;
   Property* draw_under_property_;
+  BoolProperty* gray_scale_property_;
 };
 
 } // namespace rviz

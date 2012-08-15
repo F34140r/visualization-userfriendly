@@ -43,6 +43,7 @@
 #include "rviz/ogre_helpers/grid.h"
 #include "rviz/properties/float_property.h"
 #include "rviz/properties/int_property.h"
+#include "rviz/properties/bool_property.h"
 #include "rviz/properties/property.h"
 #include "rviz/properties/quaternion_property.h"
 #include "rviz/properties/ros_topic_property.h"
@@ -81,6 +82,11 @@ MapDisplay::MapDisplay()
                                        "Rendering option, controls whether or not the map is always"
                                        " drawn behind everything else.",
                                        this, SLOT( updateDrawUnder() ));
+  
+  gray_scale_property_ = new BoolProperty( "Gray Scale", false,
+                                           "Rendering option, controls whether or not different probabilities"
+                                           " are shown in gray scale.",
+                                           this);
 
   resolution_property_ = new FloatProperty( "Resolution", 0,
                                             "Resolution of the map. (not editable)", this );
@@ -315,17 +321,25 @@ void MapDisplay::incomingMap(const nav_msgs::OccupancyGrid::ConstPtr& msg)
     }
   }
 
+  const bool gray_scale(gray_scale_property_->getBool());
   for( unsigned int pixel_index = 0; pixel_index < num_pixels_to_copy; pixel_index++ )
   {
-    unsigned char val;
-    if(msg->data[ pixel_index ] == 100)
-      val = 0;
-    else if(msg->data[ pixel_index ] == 0)
-      val = 255;
+    if (gray_scale)
+    {
+      pixels[ pixel_index ] = ((100-msg->data[ pixel_index ]) * 255) / 100;
+    }
     else
-      val = 127;
+    {
+      unsigned char val;
+      if(msg->data[ pixel_index ] == 100)
+        val = 0;
+      else if(msg->data[ pixel_index ] == 0)
+        val = 255;
+      else
+        val = 127;
 
-    pixels[ pixel_index ] = val;
+      pixels[ pixel_index ] = val;
+    }
   }
 
   Ogre::DataStreamPtr pixel_stream;
