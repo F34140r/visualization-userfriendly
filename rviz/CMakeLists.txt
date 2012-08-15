@@ -40,7 +40,7 @@ include_directories( ${OPENGL_INCLUDE_DIR} )
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_PATH})
 
-pkg_check_modules(OGRE OGRE)
+pkg_check_modules(OGRE OGRE REQUIRED)
 include_directories( ${OGRE_INCLUDE_DIRS} )
 link_directories( ${OGRE_LIBRARY_DIRS} )
 
